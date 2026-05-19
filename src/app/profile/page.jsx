@@ -8,7 +8,7 @@ import { Trophy, TrendingUp, BookOpen, Calendar, Settings, Award, ChevronLeft, C
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/dashboard/Sidebar";
-import { ProblemSolvedChart } from "@/components/ui/problem-sloved-chart";
+import { ProblemSolvedChart } from "@/components/ui/problem-solved-chart";
 import { RecentCourses } from "@/components/ui/recent-submissions";
 import GamificationDashboard from "@/components/gamification/GamificationDashboard";
 import MotivationalQuote from "@/components/dashboard/MotivationalQuote";
