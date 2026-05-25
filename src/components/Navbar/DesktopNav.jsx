@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { usePathname, useRouter } from "next/navigation";
 
 /**
  * Desktop navigation component for logged-in users and landing page.
@@ -14,6 +15,9 @@ const DesktopNav = ({
   landingNavItems,
   isActiveLink,
 }) => {
+  const pathname = usePathname();
+  const router = useRouter();
+
   return (
     <nav className="hidden md:flex items-center absolute left-1/2 -translate-x-1/2">
       {user ? (
@@ -26,7 +30,7 @@ const DesktopNav = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`h-8 w-8 p-0 rounded-full font-light ${isActiveLink(item.href) ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted hover:text-foreground'}`}
+                    className={`h-8 w-8 p-0 rounded-full font-light ${isActiveLink(item.href) ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted hover:text-foreground"}`}
                   >
                     <item.icon className="h-4 w-4" />
                   </Button>
@@ -43,24 +47,32 @@ const DesktopNav = ({
         // Landing page nav - pill style buttons with text
         <div className="flex items-center gap-0.5 px-2 py-1.5 rounded-full border border-border/50 bg-card/80 backdrop-blur-md shadow-sm">
           {landingNavItems.map((item) => (
-            <Button
+            <button
               key={item.id || item.href}
-              variant="ghost"
-              size="sm"
-              asChild={!!item.href}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
+
+                // 1. Forcefully unlock the screen from any Shadcn/Framer UI traps
+                document.body.style.overflow = "auto";
+                document.body.style.pointerEvents = "auto";
+
                 if (item.id) {
-                  document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" });
+                  if (pathname === "/") {
+                    // Pure JavaScript scroll (bypasses Next.js router loops)
+                    document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" });
+                    // Update the URL visually without triggering a Next.js re-render
+                    window.history.pushState(null, "", `#${item.id}`);
+                  } else {
+                    router.push(`/#${item.id}`);
+                  }
+                } else if (item.href) {
+                  router.push(item.href);
                 }
               }}
-              className="text-sm font-light text-foreground hover:bg-muted hover:text-foreground rounded-full h-8 px-4 transition-colors"
+              className="text-sm font-light text-foreground hover:bg-muted hover:text-foreground rounded-full h-8 px-4 flex items-center transition-colors cursor-pointer"
             >
-              {item.href ? (
-                <Link href={item.href}>{item.label}</Link>
-              ) : (
-                <span className="cursor-pointer">{item.label}</span>
-              )}
-            </Button>
+              {item.label}
+            </button>
           ))}
         </div>
       )}

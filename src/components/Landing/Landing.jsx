@@ -151,12 +151,17 @@ export default function Landing() {
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      href="/premium"
-                      className="hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50 transition-colors"
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document
+                          .getElementById("premium-features")
+                          ?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/50 transition-colors cursor-pointer p-0 h-auto font-normal text-left"
                     >
                       Premium
-                    </Link>
+                    </button>
                   </li>
                   <li>
                     <Link

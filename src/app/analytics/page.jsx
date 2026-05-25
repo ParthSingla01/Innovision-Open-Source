@@ -9,18 +9,18 @@ export default function AnalyticsPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (!loading && !user) {
       router.push("/login");
     }
-  }, [status, router]);
+  }, [user, loading, router]);
 
   if (loading) {
-    return <div className="p-8">Loading...</div>;
+    return <div className="p-8 text-foreground font-light">Loading...</div>;
   }
 
-  if (!session) {
+  if (!user) {
     return null;
   }
 
-  return <AnalyticsDashboard instructorId={session.user.email} />;
+  return <AnalyticsDashboard instructorId={user.email} />;
 }

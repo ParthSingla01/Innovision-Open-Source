@@ -25,7 +25,7 @@ import Image from "next/image";
 import xpContext from "@/contexts/xp";
 import { useNightMode } from "@/contexts/nightMode";
 import { motion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -44,6 +44,7 @@ const Navbar = () => {
   const { xp, show, changed } = useContext(xpContext);
   const { nightMode, toggleNightMode } = useNightMode();
   const pathname = usePathname();
+  const router = useRouter();
 
   const isActiveLink = (href) => {
     return pathname === href || (href === "/roadmap" && pathname === "/");
@@ -130,15 +131,40 @@ const Navbar = () => {
 
   // Navigation items for logged-in users
   const createMenuItems = [
-    { href: "/generate", label: "AI Course Generator", icon: Sparkles, description: "Create courses with AI" },
-    { href: "/studio", label: "Course Studio", icon: Palette, description: "Design custom courses" },
-    { href: "/content-ingestion", label: "Content Ingestion", icon: Upload, description: "Import existing content" },
-    { href: "/youtube-course", label: "YouTube Course", icon: Youtube, description: "Learn from YouTube" },
+    {
+      href: "/generate",
+      label: "AI Course Generator",
+      icon: Sparkles,
+      description: "Create courses with AI",
+    },
+    {
+      href: "/studio",
+      label: "Course Studio",
+      icon: Palette,
+      description: "Design custom courses",
+    },
+    {
+      href: "/content-ingestion",
+      label: "Content Ingestion",
+      icon: Upload,
+      description: "Import existing content",
+    },
+    {
+      href: "/youtube-course",
+      label: "YouTube Course",
+      icon: Youtube,
+      description: "Learn from YouTube",
+    },
   ];
 
   const learnMenuItems = [
     { href: "/roadmap", label: "My Courses", icon: Home, description: "Your learning dashboard" },
-    { href: "/courses", label: "Browse Courses", icon: BookOpen, description: "Explore all courses" },
+    {
+      href: "/courses",
+      label: "Browse Courses",
+      icon: BookOpen,
+      description: "Explore all courses",
+    },
     { href: "/code-editor", label: "Code Editor", icon: Code2, description: "Practice coding" },
   ];
 
@@ -161,14 +187,26 @@ const Navbar = () => {
     <>
       <header className="h-16 w-full border-b fixed top-0 left-0 bg-background/80 backdrop-blur-xl z-[100] border-border">
         <div className="h-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 flex items-center justify-between">
-          {/* Logo - Left */}
-          <Link
-            href={user ? `/roadmap` : "/"}
-            className="flex items-center gap-1.5 sm:gap-2 hover:opacity-80 transition-opacity shrink-0"
+          {/* Logo - Left (The Unbreakable Reload Fix) */}
+          <div
+            onClick={() => {
+              window.location.href = "/";
+            }}
+            className="flex items-center gap-1.5 sm:gap-2 hover:opacity-80 transition-opacity shrink-0 cursor-pointer"
+            role="button"
+            tabIndex={0}
           >
-            <Image src="/InnoVision_LOGO-removebg-preview.png" alt="logo" width={28} height={28} className="sm:w-8 sm:h-8" />
-            <span className="text-sm sm:text-base font-light text-foreground hidden min-[400px]:block">InnoVision</span>
-          </Link>
+            <Image
+              src="/InnoVision_LOGO-removebg-preview.png"
+              alt="logo"
+              width={28}
+              height={28}
+              className="sm:w-8 sm:h-8"
+            />
+            <span className="text-sm sm:text-base font-light text-foreground hidden min-[400px]:block">
+              InnoVision
+            </span>
+          </div>
 
           {/* Desktop Navigation - Centered */}
           <DesktopNav
@@ -222,8 +260,12 @@ const Navbar = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-orange-500/20 bg-orange-500/10 cursor-help">
-                      <Flame className={`h-3.5 w-3.5 ${streak >= 7 ? 'text-red-500' : 'text-orange-500'}`} />
-                      <span className={`text-xs font-light ${streak >= 7 ? 'text-red-400' : 'text-orange-400'}`}>
+                      <Flame
+                        className={`h-3.5 w-3.5 ${streak >= 7 ? "text-red-500" : "text-orange-500"}`}
+                      />
+                      <span
+                        className={`text-xs font-light ${streak >= 7 ? "text-red-400" : "text-orange-400"}`}
+                      >
                         {streak}
                       </span>
                     </div>
@@ -236,12 +278,21 @@ const Navbar = () => {
               </>
             )}
 
-
             {user && <NotificationBell />}
 
             {/* Theme Toggle - Always visible */}
-            <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-8 w-8 sm:h-9 sm:w-9 rounded-full hover:bg-muted text-foreground" aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}>
-              {theme === "light" ? <Moon className="h-4 w-4 sm:h-4 sm:w-4" /> : <Sun className="h-4 w-4 sm:h-4 sm:w-4" />}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-full hover:bg-muted text-foreground"
+              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+            >
+              {theme === "light" ? (
+                <Moon className="h-4 w-4 sm:h-4 sm:w-4" />
+              ) : (
+                <Sun className="h-4 w-4 sm:h-4 sm:w-4" />
+              )}
             </Button>
 
             {/* Night Mode - Always visible */}
@@ -251,10 +302,12 @@ const Navbar = () => {
                   variant="ghost"
                   size="icon"
                   onClick={toggleNightMode}
-                  className={`h-8 w-8 sm:h-9 sm:w-9 rounded-full hover:bg-muted ${nightMode ? 'text-amber-400' : 'text-foreground'}`}
+                  className={`h-8 w-8 sm:h-9 sm:w-9 rounded-full hover:bg-muted ${nightMode ? "text-amber-400" : "text-foreground"}`}
                   aria-label={nightMode ? "Disable night mode" : "Enable night mode"}
                 >
-                  <MoonStar className={`h-4 w-4 sm:h-4 sm:w-4 ${nightMode ? 'fill-amber-400' : ''}`} />
+                  <MoonStar
+                    className={`h-4 w-4 sm:h-4 sm:w-4 ${nightMode ? "fill-amber-400" : ""}`}
+                  />
                 </Button>
               </TooltipTrigger>
               <TooltipContent className="bg-background border-border">
@@ -277,7 +330,10 @@ const Navbar = () => {
               />
             ) : (
               <Link href="/login" className="shrink-0">
-                <Button size="sm" className="bg-transparent border border-border hover:bg-muted text-foreground h-8 px-4 text-xs sm:text-sm sm:h-9 sm:px-5 rounded-full font-light">
+                <Button
+                  size="sm"
+                  className="bg-transparent border border-border hover:bg-muted text-foreground h-8 px-4 text-xs sm:text-sm sm:h-9 sm:px-5 rounded-full font-light"
+                >
                   Get Started
                 </Button>
               </Link>
